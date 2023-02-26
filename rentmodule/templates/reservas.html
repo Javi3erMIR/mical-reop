@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservas</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Bienvenido, {{ username }}</h1>
+    
+    <form action="{% url 'crear_reserva' %}" id="nueva-reserva-form" method="post">
+        {% csrf_token %}
+        <label for="">Selecciona una opcion: </label>  
+        <select name="selautos" id="">
+            {% for auto in autos %}
+            <option value="{{ auto.car_model }}">{{ auto.car_model }}</option>
+            {% endfor %}        
+        </select> 
+        <label for="">Comentarios: </label>
+        <textarea name="comentarios" id="" cols="30" rows="10"></textarea>     
+        <button id="crear-reserva" type="submit">Crear nueva reserva</button>
+    </form>
+
+    {% for reserva in reservas %}
+        <form action="{% url 'get-reserva' %}" method="get">
+            {% csrf_token %}
+            <h3>{{reserva.car_model}}</h3>
+            <h3>{{reserva.comentarios}}</h3>
+            <h3>{{reserva.user_name}}</h3>
+        </form>
+        <form action="{% url 'edit' %}" method="post">
+            <input type="hidden" name="car_model" value="{{ reserva.car_model }}">
+
+            <label for="">Selecciona una opcion: </label>  
+            <select name="selautos" id="">
+                {% for auto in autos %}
+                    <option value="{{ auto.car_model }}">{{ auto.car_model }}</option>
+                {% endfor %}        
+            </select> 
+            <label for="">Comentarios: </label>
+            <textarea name="comentarios" id="" cols="30" rows="10"></textarea>            
+            <button type="submit">Editar reserva</button>            
+        </form>
+        <button class="eliminar-reserva" data-reserva-model="{{ reserva.car_model }}">Eliminar reserva</button>            
+        
+        
+    {% endfor %}
+    <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Cerrar sesion</button>
+    </form>
+    
+</body>
+<script>    
+
+    $(document).ready(function() {
+    $(".eliminar-reserva").click(function() {
+        
+        var car_model = $(this).data("reserva-model");
+
+        $.ajax({
+            url: "{% url 'eliminar-reserva' %}",
+            type: "POST",
+            data: { car_model: car_model },
+            success: function() {
+                window.location.reload();
+            }
+        });
+    });
+});
+
+</script>
+</html>

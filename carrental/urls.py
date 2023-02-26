@@ -20,6 +20,5 @@ from rentmodule import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/',include('django.contrib.auth.urls')),
-    path('mical/',include('rentmodule.urls'))
-
+    path('mical/',include('rentmodule.urls')),
 ]
